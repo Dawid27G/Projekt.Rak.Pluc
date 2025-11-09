@@ -1,19 +1,18 @@
 ---
+title: "Raport z danych pacjentów"
+author: "Dawid Genert, Agnieszka Ancypo, Sylwia Bech"
+date: "`r Sys.Date()`"
 output:
-  reprex::reprex_document:
-    venue: "gh"
-    advertise: FALSE
-    session_info: TRUE
-    style: TRUE
-    comment: "#;-)"
-    tidyverse_quiet: FALSE
-    std_out_err: TRUE
-knit: reprex::reprex_render
+  rticles::elsevier_article:
+    keep_tex: true
 ---
 
 
 ```{r setup, include = FALSE}
 knitr:: opts_chunk$set(cache=TRUE)
+install.packages("rticles")
+tinytex::install_tinytex()
+
 library(tidyverse)
 library(lubridate)
 library(ggplot2)
