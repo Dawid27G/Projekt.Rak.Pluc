@@ -22,3 +22,9 @@ dane <- read.csv("cancer patient data sets.csv")
 
 ```
 
+```{r, include = FALSE}
+miss_var_summary(dane)
+miss_case_summary(dane)
+vis_miss(dane)
+```
+
