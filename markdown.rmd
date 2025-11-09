@@ -9,6 +9,7 @@ output:
 
 
 ```{r setup, include = FALSE}
+
 knitr:: opts_chunk$set(cache=TRUE)
 install.packages("rticles")
 tinytex::install_tinytex()

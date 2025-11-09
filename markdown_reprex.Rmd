@@ -1,0 +1,24 @@
+---
+output:
+  reprex::reprex_document:
+    venue: "gh"
+    advertise: FALSE
+    session_info: TRUE
+    style: TRUE
+    comment: "#;-)"
+    tidyverse_quiet: FALSE
+    std_out_err: TRUE
+knit: reprex::reprex_render
+---
+
+
+```{r setup, include = FALSE}
+knitr:: opts_chunk$set(cache=TRUE)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(naniar)
+dane <- read.csv("cancer patient data sets.csv")
+
+```
+
