@@ -3,14 +3,18 @@ title: "Raport z danych pacjentów"
 author: "Dawid Genert, Agnieszka Ancypo, Sylwia Bech"
 date: "`r Sys.Date()`"
 output:
-  rticles::elsevier_article:
-    keep_tex: true
+  html_document:
+    theme: flatly
+    highlight: tango
+    toc: true
+    toc_float: true
 ---
 
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(validate)
 library(tidyselect)
 library(ggplot2)
 library(naniar)
@@ -22,7 +26,14 @@ dane <- read.csv("cancer patient data sets.csv")
 miss_var_summary(dane)
 miss_case_summary(dane)
 vis_miss(dane)
+gg_miss_var(dane) +
+  labs(title = "Liczba braków danych w każdej zmiennej")
+gg_miss_case(dane) +
+  labs(title = "Braki danych w poszczególnych wierszach")
+gg_miss_upset(dane)
+miss_var_summary(dane)
 ```
+
 # WSTĘP 
 Rak płuc jest jedną z najczęstszych i najbardziej śmiertelnych chorób nowotworowych na świecie. Według danych Światowej Organizacji Zdrowia (WHO) stanowi on jedną z głównych przyczyn zgonów z powodu nowotworów, a jego rozwój często wiąże się z długotrwałym narażeniem na czynniki środowiskowe i styl życia, takie jak palenie papierosów, zanieczyszczenie powietrza, spożycie alkoholu czy kontakt z substancjami toksycznymi w miejscu pracy.
 
@@ -39,3 +50,38 @@ Analiza ma na celu zbadanie zależności między wymienionymi czynnikami a wyst�
 3. Czy czynniki środowiskowe (zanieczyszczenie, palenie, alkohol) mają istotny wpływ?  
 
 
+```{r, include = FALSE}
+dane <- dane %>%
+  filter(
+    Age >= 0 & Age <= 110,
+    Gender %in% c(1,2),
+    Air.Pollution %in% c(1:8),
+    Alcohol.use %in% c(1:8),
+    chronic.Lung.Disease %in% c(1:7),
+    Genetic.Risk %in% c(1:7),
+    Smoking %in% c(1:8),
+    Dust.Allergy %in% c(1:8),
+    Chest.Pain %in% c(1:9),
+    Coughing.of.Blood %in% c(1:9),
+    Fatigue %in% c(1:9),
+    Weight.Loss %in% c(1:8),
+    Shortness.of.Breath %in% c(1:9),
+    Swallowing.Difficulty %in% c(1:8),
+    OccuPational.Hazards %in% c(1:8),
+    Balanced.Diet %in% c(1:7),
+    Obesity %in% c(1:7),
+    Passive.Smoker %in% c(1:8),
+    Wheezing %in% c(1:8),
+    Clubbing.of.Finger.Nails %in% c(1:9),
+    Frequent.Cold %in% c(1:7),
+    Dry.Cough %in% c(1:7),
+    Snoring %in% c(1:7)
+  )
+    
+v <- check_that(
+  dane,
+  max_balanced_and_obese = Balanced.Diet %in% 6:7 & Obesity %in% 6:7
+)
+summary(v)
+
+```` 
