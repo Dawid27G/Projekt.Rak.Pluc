@@ -9,13 +9,9 @@ output:
 
 
 ```{r setup, include = FALSE}
-
-knitr:: opts_chunk$set(cache=TRUE)
-install.packages("rticles")
-tinytex::install_tinytex()
-
+knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(lubridate)
+library(tidyselect)
 library(ggplot2)
 library(naniar)
 dane <- read.csv("cancer patient data sets.csv")
@@ -27,7 +23,7 @@ miss_var_summary(dane)
 miss_case_summary(dane)
 vis_miss(dane)
 ```
- #WSTĘP 
+# WSTĘP 
 Rak płuc jest jedną z najczęstszych i najbardziej śmiertelnych chorób nowotworowych na świecie. Według danych Światowej Organizacji Zdrowia (WHO) stanowi on jedną z głównych przyczyn zgonów z powodu nowotworów, a jego rozwój często wiąże się z długotrwałym narażeniem na czynniki środowiskowe i styl życia, takie jak palenie papierosów, zanieczyszczenie powietrza, spożycie alkoholu czy kontakt z substancjami toksycznymi w miejscu pracy.
 
 Celem niniejszej analizy jest zbadanie czynników, które mogą mieć wpływ na ryzyko zachorowania na raka płuc oraz identyfikacja potencjalnych zależności między nimi. Wykorzystany zbiór danych pochodzi z platformy Kaggle
