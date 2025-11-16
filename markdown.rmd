@@ -18,6 +18,7 @@ library(validate)
 library(tidyselect)
 library(ggplot2)
 library(naniar)
+library(tidyr)
 dane <- read.csv("cancer patient data sets.csv")
 
 ```
@@ -77,11 +78,166 @@ dane <- dane %>%
     Dry.Cough %in% c(1:7),
     Snoring %in% c(1:7)
   )
-    
-v <- check_that(
-  dane,
-  max_balanced_and_obese = Balanced.Diet %in% 6:7 & Obesity %in% 6:7
-)
-summary(v)
+```
+```{r, include = FALSE}
+    dane <- dane %>%
+      mutate(obese_and_balanced = (Balanced.Diet %in% 7 & Obesity %in% 7))
 
-```` 
+
+    table(dane$obese_and_balanced, useNA = "ifany")
+
+    dane <- dane %>%
+      mutate(teen_alcohol_user = (Alcohol.use %in% 1:8 & Age %in% 1:18))
+
+
+    table(dane$teen_alcohol_user, useNA = "ifany")
+
+    dane <- dane %>%
+      mutate(teen_smoker = (Smoking %in% 1:8 & Age %in% 1:18))
+
+
+    table(dane$teen_smoker, useNA = "ifany")
+
+    dane <- dane %>%
+      mutate(lung_no_breathing = (chronic.Lung.Disease %in% 6:7 & Shortness.of.Breath %in% 1))
+
+    table(dane$lung_no_breathing, useNA = "ifany")
+
+    dane <- dane %>%
+      mutate(blood_no_symptoms = (Coughing.of.Blood %in% 8:9 & Chest.Pain %in% 1 & Shortness.of.Breath %in% 1))
+
+    table(dane$blood_no_symptoms, useNA = "ifany")
+
+    dane <- dane %>%
+      mutate(heavy_smoker_no_symptoms = (Smoking %in% 7:8 &
+                                     Wheezing %in% 1 &
+                                     Dry.Cough %in% 1 &
+                                     Shortness.of.Breath %in% 1))
+
+    table(dane$heavy_smoker_no_symptoms, useNA = "ifany")
+
+    dane <- dane %>%
+      mutate(alcohol_healthy_and_fit = (Alcohol.use %in% 7:8 &
+                                   Balanced.Diet %in% 7 &
+                                   Obesity %in% 1:2))
+
+    table(dane$alcohol_healthy_and_fit, useNA = "ifany")
+
+    dane <- dane %>%
+      mutate(high_genetic_no_context = (
+        Genetic.Risk %in% 7 &
+        Smoking %in% 1 &
+        Alcohol.use %in% 1 &
+        Air.Pollution %in% 1 &
+        chronic.Lung.Disease %in% 1 &
+        Shortness.of.Breath %in% 1 &
+        Chest.Pain %in% 1
+        ))
+    table(dane$snoring_no_risk_factors, useNA = "ifany")
+
+        dane <- dane %>%
+      mutate(fatigue_no_other_symptoms = (
+       Fatigue %in% 9 &
+        Weight.Loss %in% 1 &
+        Shortness.of.Breath %in% 1 &
+        Chest.Pain %in% 1 &
+        Frequent.Cold %in% 1
+        ))
+    table(dane$fatigue_no_other_symptoms, useNA = "ifany")
+
+        dane <- dane %>%
+      mutate(snoring_no_risk_factors = (
+        Snoring %in% 6:7 &
+        Obesity %in% 1:2 &
+       Shortness.of.Breath %in% 1
+      ))
+    table(dane$high_genetic_no_context, useNA = "ifany")
+
+    dane <- dane %>%
+  mutate(
+    suspicious_score = rowSums(
+      select(., obese_and_balanced,
+                teen_alcohol_user,
+                teen_smoker,
+                lung_no_breathing,
+                blood_no_symptoms,
+                heavy_smoker_no_symptoms,
+                alcohol_healthy_and_fit,
+                high_genetic_no_context,
+                fatigue_no_other_symptoms,
+                snoring_no_risk_factors),
+      na.rm = TRUE
+    )
+  )
+  table(dane$suspicious_score)
+
+  dane %>% 
+  arrange(desc(suspicious_score)) %>% 
+  head(10)
+
+  summary_suspicious <- dane %>%
+  mutate(
+    suspicious_level = case_when(
+      suspicious_score == 1 ~ "slightly suspicious",
+      suspicious_score == 2 ~ "moderately suspicious",
+      suspicious_score >= 3 ~ "highly suspicious",
+      TRUE ~ "not suspicious"
+    )
+  ) %>%
+  count(suspicious_level) %>%
+  mutate(
+    procent = round(100 * n / sum(n), 2)
+  )
+
+summary_suspicious
+```
+```{r, include = FALSE}
+
+dane %>%
+  ggplot(aes(x = suspicious_score)) +
+  geom_bar() +
+  labs(
+    title = "Number of suspicious rules per record",
+    x = "suspicious_score (number of triggered flags)",
+    y = "Record count"
+  )
+
+  dane %>%
+  ggplot(aes(x = suspicious_score, y = Age, group = suspicious_score)) +
+  geom_boxplot() +
+  labs(
+    title = "Age vs number of suspicious rules",
+    x = "suspicious_score",
+    y = "Age"
+  )
+flags_long <- dane %>%
+  filter(suspicious_score >= 1) %>%
+  select(obese_and_balanced,
+         teen_alcohol_user,
+         teen_smoker,
+         lung_no_breathing,
+         blood_no_symptoms,
+         heavy_smoker_no_symptoms,
+         alcohol_healthy_and_fit,
+         high_genetic_no_context,
+         fatigue_no_other_symptoms,
+         snoring_no_risk_factors) %>%
+  mutate(row_id = row_number()) %>%
+  pivot_longer(
+    cols = -row_id,
+    names_to = "flag",
+    values_to = "value"
+  ) %>%
+  filter(value == TRUE)
+  flags_long %>%
+  count(flag) %>%
+  ggplot(aes(x = reorder(flag, n), y = n)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Frequency of triggered flags among suspicious records",
+    x = "Flag",
+    y = "Count"
+  )
+
+```
