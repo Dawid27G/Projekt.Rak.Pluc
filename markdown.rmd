@@ -93,7 +93,7 @@ Analiza ma na celu zbadanie zależności między wymienionymi czynnikami a wyst�
 4. Czy wiek wpływa na ryzyko zachorowania na raka płuc?
 
 ```{r, include = FALSE}
-dane <- dane %>%
+dane1 <- dane1 %>%
   filter(
     Age >= 0 & Age <= 110,
     Gender %in% c(1,2),
@@ -121,50 +121,48 @@ dane <- dane %>%
   )
 ```
 ```{r, include = FALSE}
-    dane <- dane %>%
+    dane1 <- dane1 %>%
       mutate(obese_and_balanced = (Balanced.Diet %in% 7 & Obesity %in% 7))
 
 
-    table(dane$obese_and_balanced, useNA = "ifany")
+    table(dane1$obese_and_balanced, useNA = "ifany")
 
-    dane <- dane %>%
+    dane1 <- dane1 %>%
       mutate(teen_alcohol_user = (Alcohol.use %in% 1:8 & Age %in% 1:18))
 
 
-    table(dane$teen_alcohol_user, useNA = "ifany")
-
+    table(dane1$teen_alcohol_user, useNA = "ifany")
     dane <- dane %>%
       mutate(teen_smoker = (Smoking %in% 1:8 & Age %in% 1:18))
 
 
-    table(dane$teen_smoker, useNA = "ifany")
+    table(dane1$teen_smoker, useNA = "ifany")
 
-    dane <- dane %>%
+    dane1 <- dane1 %>%
       mutate(lung_no_breathing = (chronic.Lung.Disease %in% 6:7 & Shortness.of.Breath %in% 1))
 
-    table(dane$lung_no_breathing, useNA = "ifany")
-
-    dane <- dane %>%
+    table(dane1$lung_no_breathing, useNA = "ifany")
+    dane1 <- dane1 %>%
       mutate(blood_no_symptoms = (Coughing.of.Blood %in% 8:9 & Chest.Pain %in% 1 & Shortness.of.Breath %in% 1))
 
-    table(dane$blood_no_symptoms, useNA = "ifany")
+    table(dane1$blood_no_symptoms, useNA = "ifany")
 
-    dane <- dane %>%
+    dane1 <- dane1 %>%
       mutate(heavy_smoker_no_symptoms = (Smoking %in% 7:8 &
                                      Wheezing %in% 1 &
                                      Dry.Cough %in% 1 &
                                      Shortness.of.Breath %in% 1))
 
-    table(dane$heavy_smoker_no_symptoms, useNA = "ifany")
+    table(dane1$heavy_smoker_no_symptoms, useNA = "ifany")
 
-    dane <- dane %>%
+    dane1 <- dane1 %>%
       mutate(alcohol_healthy_and_fit = (Alcohol.use %in% 7:8 &
                                    Balanced.Diet %in% 7 &
                                    Obesity %in% 1:2))
 
-    table(dane$alcohol_healthy_and_fit, useNA = "ifany")
+    table(dane1$alcohol_healthy_and_fit, useNA = "ifany")
 
-    dane <- dane %>%
+    dane1 <- dane1 %>%
       mutate(high_genetic_no_context = (
         Genetic.Risk %in% 7 &
         Smoking %in% 1 &
@@ -174,9 +172,9 @@ dane <- dane %>%
         Shortness.of.Breath %in% 1 &
         Chest.Pain %in% 1
         ))
-    table(dane$snoring_no_risk_factors, useNA = "ifany")
+    table(dane1$snoring_no_risk_factors, useNA = "ifany")
 
-        dane <- dane %>%
+        dane1 <- dane1  %>%
       mutate(fatigue_no_other_symptoms = (
        Fatigue %in% 9 &
         Weight.Loss %in% 1 &
@@ -184,17 +182,17 @@ dane <- dane %>%
         Chest.Pain %in% 1 &
         Frequent.Cold %in% 1
         ))
-    table(dane$fatigue_no_other_symptoms, useNA = "ifany")
+    table(dane1$fatigue_no_other_symptoms, useNA = "ifany")
 
-        dane <- dane %>%
+        dane1 <- dane1 %>%
       mutate(snoring_no_risk_factors = (
         Snoring %in% 6:7 &
         Obesity %in% 1:2 &
        Shortness.of.Breath %in% 1
       ))
-    table(dane$high_genetic_no_context, useNA = "ifany")
+    table(dane1$high_genetic_no_context, useNA = "ifany")
 
-    dane <- dane %>%
+    dane1 <- dane1 %>%
   mutate(
     suspicious_score = rowSums(
       select(., obese_and_balanced,
@@ -210,13 +208,13 @@ dane <- dane %>%
       na.rm = TRUE
     )
   )
-  table(dane$suspicious_score)
+  table(dane1$suspicious_score)
 
-  dane %>% 
+  dane1 %>% 
   arrange(desc(suspicious_score)) %>% 
   head(10)
 
-  summary_suspicious <- dane %>%
+  summary_suspicious <- dane1 %>%
   mutate(
     suspicious_level = case_when(
       suspicious_score == 1 ~ "slightly suspicious",
@@ -243,7 +241,7 @@ dane %>%
     y = "Record count"
   )
 
-  dane %>%
+  dane1 %>%
   ggplot(aes(x = suspicious_score, y = Age, group = suspicious_score)) +
   geom_boxplot() +
   labs(
@@ -251,7 +249,7 @@ dane %>%
     x = "suspicious_score",
     y = "Age"
   )
-flags_long <- dane %>%
+flags_long <- dane1 %>%
   filter(suspicious_score >= 1) %>%
   select(obese_and_balanced,
          teen_alcohol_user,
