@@ -23,6 +23,34 @@ dane <- read.csv("cancer patient data sets.csv")
 
 ```
 
+```{r inject_missing, echo = TRUE}
+# Funkcja do wstawiania losowych braków (NA) do zadanych zmiennych
+inject_missing <- function(df, vars, prop = 0.1, seed = NULL) {
+  if (!is.null(seed)) set.seed(seed)
+  n <- nrow(df)
+  for (v in vars) {
+    if (!v %in% names(df)) {
+      warning(sprintf("Zmienna %s nie istnieje w danych - pomijam", v))
+      next
+    }
+    k <- floor(prop * n)
+    if (k <= 0) next
+    idx <- sample(seq_len(n), size = k)
+    df[idx, v] <- NA
+  }
+  df
+}
+
+# Domyślne wstawienie braków do 3 zmiennych (możesz zmienić nazwy/proporcję)
+dane <- inject_missing(dane,
+                       vars = c("Age", "Smoking", "Alcohol.use"),
+                       prop = 0.1,
+                       seed = 123)
+
+# Pokazanie podstawowego podsumowania liczby NA w zmiennych
+sapply(dane[c("Age", "Smoking", "Alcohol.use")], function(x) sum(is.na(x)))
+```
+
 ```{r, include = FALSE}
 miss_var_summary(dane)
 miss_case_summary(dane)
