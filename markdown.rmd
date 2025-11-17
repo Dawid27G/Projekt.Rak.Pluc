@@ -83,7 +83,7 @@ Analiza ma na celu zbadanie zależności między wymienionymi czynnikami a wyst�
 1. Jakie czynniki najczęściej współwystępują z występowaniem raka płuc?  
 2. Czy istnieją różnice między płciami w częstości zachorowań?  
 3. Czy czynniki środowiskowe (zanieczyszczenie, palenie, alkohol) mają istotny wpływ?  
-
+4. Czy wiek wpływa na ryzyko zachorowania na raka płuc?
 
 ```{r, include = FALSE}
 dane <- dane %>%
