@@ -132,7 +132,7 @@ dane1 <- dane1 %>%
 
 
     table(dane1$teen_alcohol_user, useNA = "ifany")
-    dane <- dane %>%
+    dane1 <- dane1 %>%
       mutate(teen_smoker = (Smoking %in% 1:8 & Age %in% 1:18))
 
 
