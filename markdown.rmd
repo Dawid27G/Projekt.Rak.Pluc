@@ -52,9 +52,7 @@ dane <- inject_missing(dane,
 # Pokazanie podstawowego podsumowania liczby NA w zmiennych
 sapply(dane[c("Age", "Smoking", "Alcohol.use")], function(x) sum(is.na(x)))
 ```
-```{r}
-missing_pattern(dane)
-```
+
 
 
 ```{r, include = FALSE}
@@ -67,6 +65,15 @@ gg_miss_case(dane) +
   labs(title = "Braki danych w poszczególnych wierszach")
 gg_miss_upset(dane)
 miss_var_summary(dane)
+```
+
+```{r, include = FALSE}
+
+md.pattern(dane)
+dane_imp <- mice(dane, m = 10, maxit = 10, seed = 123)
+dane1 <- complete(dane_imp, action="long")
+md.pattern(dane1)
+
 ```
 
 # WSTĘP 
