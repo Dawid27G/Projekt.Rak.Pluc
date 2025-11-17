@@ -10,7 +10,6 @@ output:
     toc_float: true
 ---
 
-
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -19,9 +18,12 @@ library(tidyselect)
 library(ggplot2)
 library(naniar)
 library(tidyr)
+library(finalfit) 
+library(mice)
 dane <- read.csv("cancer patient data sets.csv")
 
 ```
+
 
 ```{r inject_missing, echo = TRUE}
 # Funkcja do wstawiania losowych braków (NA) do zadanych zmiennych
@@ -50,6 +52,10 @@ dane <- inject_missing(dane,
 # Pokazanie podstawowego podsumowania liczby NA w zmiennych
 sapply(dane[c("Age", "Smoking", "Alcohol.use")], function(x) sum(is.na(x)))
 ```
+```{r}
+missing_pattern(dane)
+```
+
 
 ```{r, include = FALSE}
 miss_var_summary(dane)
