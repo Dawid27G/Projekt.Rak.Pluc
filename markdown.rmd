@@ -91,6 +91,9 @@ Analiza ma na celu zbadanie zależności między wymienionymi czynnikami a wyst�
 2. Czy istnieją różnice między płciami w częstości zachorowań?  
 3. Czy czynniki środowiskowe (zanieczyszczenie, palenie, alkohol) mają istotny wpływ?  
 4. Czy wiek wpływa na ryzyko zachorowania na raka płuc?
+```{r}
+
+```
 
 ```{r, include = FALSE}
 dane1 <- dane1 %>%
@@ -278,5 +281,58 @@ flags_long <- dane1 %>%
     x = "Flag",
     y = "Count"
   )
+hist(dane1$Age,
+     col="lightblue",
+     border="black",
+     main="Histogram wieku",
+     xlab="Wiek")
 
 ```
+```{r}
+boxplot(Age ~ Gender, data=dane1,
+        col=c("orange","lightblue"),
+        main="Wiek wg płci",
+        xlab="Płeć",
+        ylab="Wiek")
+
+```
+```{r}
+library(dplyr)
+
+mean_smoking <- dane1 %>%
+  group_by(Level) %>%
+  summarise(mean_smoke = mean(Smoking))
+
+barplot(mean_smoking$mean_smoke,
+        names.arg = mean_smoking$Level,
+        col="skyblue",
+        main="Średni poziom palenia vs Level",
+        ylab="Średnia")
+
+```
+```{r}
+barplot(table(dane1$Level),
+        col=c("lightgreen","orange","red"),
+        main="Liczba pacjentów wg Level",
+        ylab="Liczba",
+        xlab="Level")
+
+```
+```{r}
+ggplot(dane1, aes(x = Level, fill = as.factor(Gender))) +
+  geom_bar(position="dodge") +
+  theme_minimal() +
+  ggtitle("Częstość Level wg płci") +
+  labs(fill="Płeć")
+
+```
+```{r}
+ggplot(dane1, aes(x = as.factor(Gender), y = Age, fill = as.factor(Gender))) +
+  geom_boxplot() +
+  theme_minimal() +
+  ggtitle("Wiek wg płci") +
+  labs(x = "Płeć")
+
+```
+
+
